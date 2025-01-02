@@ -1,0 +1,48 @@
+{
+  "name": "reactivizor",
+  "version": "1.0.0",
+  "description": "Un package TypeScript pour la gestion réactive.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/votre-utilisateur/reactivizor.git"
+  },
+  "keywords": [
+    "typescript",
+    "reactivity",
+    "state-management"
+  ],
+  "author": "Votre Nom",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "^19.0.2",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "rxjs": "^7.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": false
+    },
+    "typescript": {
+      "optional": false
+    }
+  }
+}
