@@ -33,9 +33,9 @@ function useReaCompute()
 // Types
 type ReaXarType
 type ReaXorType
-type ReaFactoryType
-type UseReaHookType
-type UseReaComputeHookType
+type ReaType
+type UseReaType
+type UseReaComputeType
 ```
 
 ## Create a reactive variable `rea()`

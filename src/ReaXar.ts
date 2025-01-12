@@ -1,4 +1,3 @@
-// ReaXar.ts
 import {
   BehaviorSubject,
   map,
