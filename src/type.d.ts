@@ -55,12 +55,54 @@ export type ReaXorType<T> = {
      * Access to the underlying ReaXar instance.
      */
     reaxar: ReaXarType<T>;
+    /**
+     * Static method to create and register a new store.
+     * @param initialValue - Initial value of the store.
+     * @param reaXorManager - Instance of the ReaXorManager for registering the store.
+     * @param keyStore - Unique key to register the store.
+     * @returns A new instance of ReaXor.
+     */
+    create: (initialValue: T, reaXorManager: any, keyStore: string) => ReaXorType<T>;
+};
+
+export type RxStoreType = {
+    /** Adds a store to the manager. */
+    addStore: <T>(key: string, store: T) => void;
+    
+    /** Retrieves all stores. */
+    getStores: () => StoreMap;
+    
+    /** Retrieves a specific store by its key. */
+    getStore: <T>(key: string) => T;
+    
+    /** Checks if a store exists by its key. */
+    hasStore: (key: string) => boolean
+    
+    /** Resets the manager by clearing all stores and services. */
+    reset: () => void;
+};
+
+export type RxServiceType = {
+    /** Adds a service to the manager. */
+    addService: <T>(key: string, service: T) => void;
+    
+    /** Retrieves all services. */
+    getServices: () => ServiceMap;
+    
+    /** Retrieves a specific service by its key. */
+    getService: <T>(key: string) => T;
+    
+    /** Checks if a service exists by its key. */
+    hasService: (key: string) => boolean
+    
+    /** Resets the manager by clearing all stores and services. */
+    reset: () => void;
 };
 
 /**
  * Factory function to create a new reactive variable.
  */
-export type ReaFactoryType = {
+export type ReaType = {
     /**
      * Creates a new ReaXar instance with an initial value.
      * @param initialValue - The initial value for the reactive variable.
@@ -72,7 +114,7 @@ export type ReaFactoryType = {
 /**
  * React hook to use a ReaXar variable.
  */
-export type UseReaHookType = {
+export type UseReaType = {
     /**
      * Connects a ReaXar variable to a React component and subscribes to its changes.
      * @param variable - The ReaXar variable to connect.
@@ -84,7 +126,7 @@ export type UseReaHookType = {
 /**
  * React hook to use an Observable as a computed value.
  */
-export type UseReaComputeHookType = {
+export type UseReaComputeType = {
     /**
      * Connects an Observable to a React component and subscribes to its changes.
      * @param observable - The Observable to connect.

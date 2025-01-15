@@ -1,4 +1,3 @@
-// Rea.ts
 import { ReaXar } from "./ReaXar";
 import { ReaXarType } from "./type";
 

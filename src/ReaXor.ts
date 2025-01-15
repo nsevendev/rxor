@@ -1,14 +1,20 @@
-// ReaXor.ts
 import { rea } from "./Rea";
 import { ReaXarType } from "./type";
+import {rxStore} from "./RxStore";
 
 export class ReaXor<T> {
   private readonly store: ReaXarType<T>;
   private readonly initialValue: T;
 
-  constructor(initialValue: T) {
+  private constructor(initialValue: T) {
     this.initialValue = initialValue;
     this.store = rea<T>(initialValue);
+  }
+  
+  static create<T>(initialValue: T, keyStore: string): ReaXor<T> {
+    const instance = new ReaXor<T>(initialValue);
+    rxStore.addStore<T>(keyStore, instance);
+    return instance;
   }
 
   get reaxar(): ReaXarType<T> {

@@ -1,5 +1,5 @@
 {
-  "name": "reactivizor",
+  "name": "rxor",
   "version": "1.0.0",
   "description": "Un package TypeScript pour la gestion réactive.",
   "main": "./dist/index.js",
@@ -8,7 +8,8 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
     }
   },
   "scripts": {
@@ -28,6 +29,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
     "typescript": "^5.0.0"
   },
   "dependencies": {
@@ -35,6 +37,7 @@
   },
   "peerDependencies": {
     "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "typescript": "^5.0.0"
   },
   "peerDependenciesMeta": {

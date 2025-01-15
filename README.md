@@ -19,25 +19,6 @@ npm install reactivizor
 
 ---
 
-## Function, class, type available  
-```ts
-// All core functionality
-class ReaXar
-class ReaXor
-function rea()
-
-// React hooks for Reactivizor
-function useRea()
-function useReaCompute()
-
-// Types
-type ReaXarType
-type ReaXorType
-type ReaFactoryType
-type UseReaHookType
-type UseReaComputeHookType
-```
-
 ## Create a reactive variable `rea()`
 ```ts
 import { rea } from 'reactivizor';
