@@ -1,5 +1,5 @@
 {
-  "name": "rxor",
+  "name": "rxor2",
   "version": "0.0.1",
   "description": "Un package TypeScript pour la gestion réactive.",
   "main": "./dist/index.js",
