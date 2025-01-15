@@ -30,7 +30,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm version patch
-          npm publish
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git push origin main --tags
+          npm publish
