@@ -1,11 +1,11 @@
 import { ReaService } from "./ReaService";
 
-export type ServiceMap = Record<string, ReaService<any, any>>;
+export type ServiceMap = Record<string, ReaService<any>>
 
-export class RxService<R extends string> {
-    private services: ServiceMap = {};
+export class RxService {
+    private services: ServiceMap = {} as ServiceMap;
     
-    addService = <T>(key: R, service: ReaService<T, R>): void => {
+    addService = <T>(key: string, service: ReaService<T>): void => {
         if (this.services[key]) {
             console.warn(`Service with key "${key}" already exists. Overwriting.`);
         }
@@ -16,7 +16,7 @@ export class RxService<R extends string> {
         return this.services;
     }
     
-    getService = <T>(key: R): T => {
+    getService = <T>(key: string): T => {
         const service = this.services[key];
         return service as T;
     }
@@ -26,7 +26,8 @@ export class RxService<R extends string> {
     }
     
     reset = (): void => {
-        this.services = {};
+        this.services = {} as ServiceMap;
     }
 }
 
+export const rxService = new RxService();

@@ -1,13 +1,12 @@
-import {RxService} from "./RxService";
+import { rxService } from "./RxService";
 
-export abstract class ReaService<T, R extends string> {
-    protected rxService: RxService<R>;
+export abstract class ReaService<T> {
+    protected rxService = rxService;
     
-    protected constructor(key: R, rxService: RxService<R>) {
-        if (rxService.hasService(key)) {
+    protected constructor(key: string) {
+        if (this.rxService.hasService(key)) {
             console.warn(`Service with key "${key}" already exists. Overwriting.`);
         }
-        rxService.addService<T>(key, this);
-        this.rxService = rxService;
+        this.rxService.addService<T>(key, this);
     }
 }

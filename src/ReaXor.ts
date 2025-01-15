@@ -1,6 +1,6 @@
 import { rea } from "./Rea";
 import { ReaXarType } from "./type";
-import { RxStore } from "./RxStore";
+import {rxStore} from "./RxStore";
 
 export class ReaXor<T> {
   private readonly store: ReaXarType<T>;
@@ -11,9 +11,9 @@ export class ReaXor<T> {
     this.store = rea<T>(initialValue);
   }
   
-  static create<T>(initialValue: T, reaXorManager: RxStore, keyStore: string): ReaXor<T> {
+  static create<T>(initialValue: T, keyStore: string): ReaXor<T> {
     const instance = new ReaXor<T>(initialValue);
-    reaXorManager.addStore<T>(keyStore, instance);
+    rxStore.addStore<T>(keyStore, instance);
     return instance;
   }
 
