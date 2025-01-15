@@ -7,13 +7,12 @@ on:
   pull_request:
     branches:
       - main
+  permissions:
+    contents: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout repository
