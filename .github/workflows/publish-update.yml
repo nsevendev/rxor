@@ -19,26 +19,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Vérification du code source
+      # checked code source
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Configuration de Node.js
+      # Config Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '22.13.0'
           cache: 'npm'
 
-      # Installation des dépendances
+      # Install dependancies
       - name: Install dependencies
         run: npm install
 
-      # Build du projet
+      # Build project
       - name: Build project
         run: npm run prepare
 
-      # Déterminer si on est sur la branche "main" ou "re7
+      # checked if we on branch "main" or "re7
       - name: Check branch
         id: branch-check
         run: |
@@ -51,7 +51,7 @@ jobs:
             echo "on_recette=false" >> $GITHUB_ENV
           fi
 
-      # Identifier le type de bump
+      # Identifier type of bump
       - name: Determine bump type
         if: env.on_main == 'true'
         id: determine-bump
@@ -66,7 +66,7 @@ jobs:
           echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_ENV
           echo "Bump type determined: $BUMP_TYPE"
 
-      # Incrémenter la version
+      # Incremente version
       - name: Bump version
         if: env.on_main == 'true'
         run: |
@@ -75,7 +75,7 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           echo "New version: $VERSION"
 
-      # Commit de la nouvelle version
+      # Commit new version
       - name: Commit new version
         if: env.on_main == 'true'
         run: |
@@ -85,7 +85,7 @@ jobs:
           git add package.json package-lock.json
           git commit -m "chore(release): bump version to $VERSION"
 
-      # Commit dist dans la branch
+      # Commit dist in branch
       - name: Commit new dist
         if: env.on_main == 'true' || env.on_recette == 'true'
         run: |
@@ -95,24 +95,24 @@ jobs:
           git add dist/
           git commit --allow-empty -m "chore(release): build dist $VERSION"
 
-      # Pousser les modifications sur la branche main
+      # Push commit in branch main
       - name: Push changes to main
         if: env.on_main == 'true'
         run: |
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
 
-      # Pousser les modifications sur la branche re7
+      # Push commit in branch re7
       - name: Push changes to re7
         if: env.on_recette == 'true'
         run: |
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:re7
 
-      # Configuration de l'authentification npm dans .npmrc
+      # Config auth npm in .npmrc
       - name: Configure npm authentication
         if: env.on_main == 'true'
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
-      # Publier sur npm
+      # Publish npm
       - name: Publish to npm
         if: env.on_main == 'true'
         env:
