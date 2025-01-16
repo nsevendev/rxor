@@ -47,7 +47,7 @@ jobs:
           echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_ENV
           echo "Bump type determined: $BUMP_TYPE"
           echo "::set-output name=bump_type::$BUMP_TYPE"
-
+ 
       # Incrémenter la version
       - name: Bump version
         run: |
