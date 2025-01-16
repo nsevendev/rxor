@@ -10,7 +10,7 @@ on:
 
 permissions:
   contents: write
- 
+
 jobs:
   publish:
     if: github.event_name == 'push'
@@ -75,4 +75,4 @@ jobs:
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
+        run: npm publish --access public --loglevel verbose

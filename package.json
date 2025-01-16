@@ -18,14 +18,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/votre-utilisateur/reactivizor.git"
+    "url": "https://github.com/nseven/rxor.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "typescript",
     "reactivity",
     "state-management"
   ],
-  "author": "Votre Nom",
+  "author": "nseven",
   "license": "MIT",
   "devDependencies": {
     "@types/react": "^19.0.2",
