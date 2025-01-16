@@ -46,7 +46,8 @@ jobs:
       - name: Bump version
         run: |
           npm version $BUMP_TYPE --no-git-tag-version
-          echo "New version: $(node -p \"require('./package.json').version\")"
+          VERSION=$(node -p "require('./package.json').version")
+          echo "New version: $VERSION"
 
       # Commit de la nouvelle version
       - name: Commit new version
