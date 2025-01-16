@@ -1,0 +1,68 @@
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  publish:
+    if: github.event_name == 'push'
+    name: Publish to npm
+    runs-on: ubuntu-latest
+
+    steps:
+      # Vérification du code source
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Configuration de Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.13.0'
+          cache: 'npm'
+
+      # Installation des dépendances
+      - name: Install dependencies
+        run: npm install
+
+      # Identifier le type de bump
+      - name: Determine bump type
+        id: determine-bump
+        run: |
+          BUMP_TYPE=$(echo "${{ github.event.head_commit.message }}" | grep -oE '\[bump:(patch|minor|major)\]' | sed 's/\[bump://;s/\]//')
+          if [ -z "$BUMP_TYPE" ]; then
+            echo "No bump type found in commit message. Defaulting to 'patch'."
+            BUMP_TYPE="patch"
+          fi
+          echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_ENV
+          echo "Bump type determined: $BUMP_TYPE"
+
+      # Incrémenter la version
+      - name: Bump version
+        run: |
+          npm version $BUMP_TYPE --no-git-tag-version
+          echo "New version: $(node -p \"require('./package.json').version\")"
+
+      # Commit de la nouvelle version
+      - name: Commit new version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "chore(release): bump version to $(node -p \"require('./package.json').version\")"
+          git push origin main
+
+      # Build du projet
+      - name: Build project
+        run: npm run build
+
+      # Publier sur npm
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
