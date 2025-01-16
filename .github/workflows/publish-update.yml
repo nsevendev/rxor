@@ -41,7 +41,7 @@ jobs:
           BUMP_TYPE=$(echo "${{ github.event.head_commit.message }}" | grep -oE '\[bump:(patch|minor|major)\]' | sed 's/\[bump://;s/\]//')
         # Vérifier si le type de bump est valide, sinon utiliser "patch" par défaut
           if [[ "$BUMP_TYPE" =~ ^(patch|minor|major)$ ]]; then
-            echo "Valid bump type found: $BUMP_TYPE"
+            echo "Valid bump type found:" $BUMP_TYPE
           else
             echo "No valid bump type found in commit message. Defaulting to 'patch'."
             BUMP_TYPE="patch"
