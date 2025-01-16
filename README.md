@@ -1,7 +1,7 @@
 # Rxor Documentation
 
 - Rxor is a lightweight and versatile library for managing reactive states with React.  
-  This documentation provides a complete guide to understanding and using Reactivizor
+  This documentation provides a complete guide to understanding and using rxor
 
 - Rxor uses `rxjs` as a subpackage, and needs `React 18.0.0` minimum and `Typescript 5.0.0` minimum to work.
 
@@ -157,7 +157,7 @@ myTodo.getTodo().value[0].title; // display a value of title of the first elemen
 myTodo.getLength().value; // display 1
 ```
 
-- you can build as you want
+- you can build as you want !
 
 ---
 
@@ -292,7 +292,7 @@ export const FormAddTodo = () => {
 // In ListTodo.tsx
 import { todoStore, TodoType } from "../Module/Todo/TodoStore.ts";
 import { todoService } from "../Module/Todo/TodoService.ts";
-import { useRea } from "reactivizor";
+import { useRea } from "rxor";
 
 export const ListTodo = () => {
   // here reaxar is a property of the ReaXor class and she get the ReaXarType value of our store
