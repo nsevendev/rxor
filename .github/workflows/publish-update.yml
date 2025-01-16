@@ -37,17 +37,24 @@ jobs:
       - name: Determine bump type
         id: determine-bump
         run: |
+        # Extraire le type de bump depuis le message de commit
           BUMP_TYPE=$(echo "${{ github.event.head_commit.message }}" | grep -oE '\[bump:(patch|minor|major)\]' | sed 's/\[bump://;s/\]//')
-          if [ -z "$BUMP_TYPE" ]; then
-            echo "No bump type found in commit message. Defaulting to 'patch'."
+        # Vérifier si le type de bump est valide, sinon utiliser "patch" par défaut
+          if [[ "$BUMP_TYPE" =~ ^(patch|minor|major)$ ]]; then
+            echo "Valid bump type found: $BUMP_TYPE"
+          else
+            echo "No valid bump type found in commit message. Defaulting to 'patch'."
             BUMP_TYPE="patch"
           fi
+        # Message info    
           echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_ENV
           echo "Bump type determined: $BUMP_TYPE"
+          echo "::set-output name=bump_type::$BUMP_TYPE"
 
       # Incrémenter la version
       - name: Bump version
         run: |
+          echo "Using bump type: $BUMP_TYPE"
           npm version $BUMP_TYPE --no-git-tag-version
           VERSION=$(node -p "require('./package.json').version")
           echo "New version: $VERSION"
@@ -71,6 +78,7 @@ jobs:
         run: |
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
 
+      # Configuration de l'authentification npm dans .npmrc
       - name: Configure npm authentication
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
