@@ -1,20 +1,10 @@
 import { useState, useEffect } from "react";
 import { Observable } from "rxjs";
-import { ReaXarType } from "./type";
 import { rxStore } from "./RxStore";
-import {rxService} from "./RxService";
+import { ReaXar } from "./ReaXar";
+import {getService} from "./GetService";
 
-export const getService = <T>(key: string): T => {
-  const service = rxService.getService<T>(key);
-  
-  if (!service) {
-    throw new Error(`Service with key "${key}" not found.`);
-  }
-  
-  return service;
-}
-
-export function useRea<T>(variable: ReaXarType<T>): T {
+export function useRea<T>(variable: ReaXar<T>): T {
   const [value, setValue] = useState(variable.value);
 
   useEffect(() => {
