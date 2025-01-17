@@ -4,37 +4,56 @@ on:
   push:
     branches:
       - main
+      - re7
   pull_request:
-    branches:
-      - main
+    types:
+      - closed
 
 permissions:
   contents: write
 
 jobs:
   publish:
-    if: github.event_name == 'push'
+    if: github.event.pull_request.merged == true && (github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 're7') || github.event_name == 'push'
     name: Publish to npm
     runs-on: ubuntu-latest
 
     steps:
-      # Vérification du code source
+      # checked code source
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Configuration de Node.js
+      # Config Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '22.13.0'
           cache: 'npm'
 
-      # Installation des dépendances
+      # Install dependancies
       - name: Install dependencies
         run: npm install
 
-      # Identifier le type de bump
+      # Build project
+      - name: Build project
+        run: npm run prepare
+
+      # checked if we on branch "main" or "re7
+      - name: Check branch
+        id: branch-check
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "on_main=true" >> $GITHUB_ENV
+          elif [ "${{ github.ref_name }}" = "re7" ]; then
+            echo "on_recette=true" >> $GITHUB_ENV
+          else
+            echo "on_main=false" >> $GITHUB_ENV
+            echo "on_recette=false" >> $GITHUB_ENV
+          fi
+
+      # Identifier type of bump
       - name: Determine bump type
+        if: env.on_main == 'true'
         id: determine-bump
         run: |
           BUMP_TYPE=$(echo "${{ github.event.head_commit.message }}" | grep -oE '\[bump:(patch|minor|major)\]' | sed 's/\[bump://;s/\]//')
@@ -46,41 +65,56 @@ jobs:
           fi
           echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_ENV
           echo "Bump type determined: $BUMP_TYPE"
-          echo "::set-output name=bump_type::$BUMP_TYPE"
- 
-      # Incrémenter la version
+
+      # Incremente version
       - name: Bump version
+        if: env.on_main == 'true'
         run: |
           echo "Using bump type: $BUMP_TYPE"
           npm version $BUMP_TYPE --no-git-tag-version
           VERSION=$(node -p "require('./package.json').version")
           echo "New version: $VERSION"
 
-      # Build du projet
-      - name: Build project
-        run: npm run prepare
-
-      # Commit de la nouvelle version
+      # Commit new version
       - name: Commit new version
+        if: env.on_main == 'true'
         run: |
           VERSION=$(node -p "require('./package.json').version")
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add package.json package-lock.json
           git commit -m "chore(release): bump version to $VERSION"
-          git push origin main
 
-      # Pousser les modifications sur la branche main
+      # Commit dist in branch
+      - name: Commit new dist
+        if: env.on_main == 'true' || env.on_recette == 'true'
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dist/
+          git commit --allow-empty -m "chore(release): build dist $VERSION"
+
+      # Push commit in branch main
       - name: Push changes to main
+        if: env.on_main == 'true'
         run: |
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
 
-      # Configuration de l'authentification npm dans .npmrc
+      # Push commit in branch re7
+      - name: Push changes to re7
+        if: env.on_recette == 'true'
+        run: |
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:re7
+
+      # Config auth npm in .npmrc
       - name: Configure npm authentication
+        if: env.on_main == 'true'
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
-      # Publier sur npm
+      # Publish npm
       - name: Publish to npm
+        if: env.on_main == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --access public --loglevel verbose

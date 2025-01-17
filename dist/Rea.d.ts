@@ -1,2 +1,2 @@
-import { ReaXarType } from "./type";
-export declare function rea<T>(initialValue: T): ReaXarType<T>;
+import { ReaXar } from "./ReaXar";
+export declare function reaxar<T>(initialValue: T): ReaXar<T>;
