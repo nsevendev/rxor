@@ -8,6 +8,5 @@ export declare class ReaXor<T> {
     get value(): T;
     set value(newValue: T);
     reset(): void;
-    toObject(): T;
     subscribe(callback: (value: T) => void): void;
 }
