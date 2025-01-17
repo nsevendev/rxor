@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Observable } from "rxjs";
 import { rxStore } from "./RxStore";
 import { ReaXar } from "./ReaXar";
-import {getService} from "./GetService";
+import { rxservice } from "./GetService";
 
 export function useRea<T>(variable: ReaXar<T>): T {
   const [value, setValue] = useState(variable.value);
@@ -32,7 +32,7 @@ export const useRxCompute = <T, R>(
     serviceKey: string,
     method: (service: T) => Observable<R>
 ): R | undefined => {
-  const service = getService<T>(serviceKey);
+  const service = rxservice<T>(serviceKey);
   
   return useReaCompute(method(service));
 };
@@ -42,7 +42,7 @@ export const useRxFetch = <T, R = Error>(
     method: (service: T) => Promise<void>,
     errorCustom?: (error: any) => R
 ) => {
-  const service = getService<T>(serviceKey);
+  const service = rxservice<T>(serviceKey);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   

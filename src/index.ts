@@ -1,8 +1,8 @@
 // Export all core functionality
 export { ReaXor } from './ReaXor';
 export { ReaService } from "./ReaService";
-export { rea } from './Rea';
-export { getService } from './GetService';
+export { reaxar } from './Rea';
+export { rxservice } from './GetService';
 
 // Export React hooks
 export { useRea } from './ReaHook';

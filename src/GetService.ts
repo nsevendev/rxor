@@ -1,6 +1,6 @@
-import {rxService} from "./RxService";
+import { rxService } from "./RxService";
 
-export const getService = <T>(key: string): T => {
+export const rxservice = <T>(key: string): T => {
     const service = rxService.getService<T>(key);
     
     if (!service) {

@@ -1,4 +1,4 @@
-import { rea } from "./Rea";
+import { reaxar } from "./Rea";
 import { rxStore } from "./RxStore";
 import { ReaXar } from "./ReaXar";
 
@@ -8,7 +8,7 @@ export class ReaXor<T> {
 
   private constructor(initialValue: T) {
     this.initialValue = initialValue;
-    this.store = rea<T>(initialValue);
+    this.store = reaxar<T>(initialValue);
   }
   
   static create<T>(initialValue: T, keyStore: string): ReaXor<T> {
