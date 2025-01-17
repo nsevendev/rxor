@@ -25,10 +25,6 @@ export class ReaXor {
     reset() {
         this.store.value = this.initialValue;
     }
-    // Method to convert the store to an object (useful for complex objects)
-    toObject() {
-        return this.store.value;
-    }
     // Method to subscribe to changes
     subscribe(callback) {
         this.store.subscribe(callback);
