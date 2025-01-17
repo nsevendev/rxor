@@ -36,11 +36,6 @@ export class ReaXor<T> {
     this.store.value = this.initialValue;
   }
 
-  // Method to convert the store to an object (useful for complex objects)
-  toObject(): T {
-    return this.store.value;
-  }
-
   // Method to subscribe to changes
   subscribe(callback: (value: T) => void): void {
     this.store.subscribe(callback);
