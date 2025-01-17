@@ -1,4 +1,4 @@
-# Rxor Documentation
+# Rxor
 
 - Rxor is a lightweight and versatile library for managing reactive states with React.  
   This documentation provides a complete guide to understanding and using rxor

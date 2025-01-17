@@ -1,7 +1,7 @@
 {
   "name": "rxor",
   "version": "0.0.1",
-  "description": "Un package TypeScript pour la gestion réactive.",
+  "description": "A simple state management library for React using RxJS",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nseven/rxor.git"
+    "url": "https://github.com/nsevendev/rxor"
   },
   "publishConfig": {
     "access": "public"
