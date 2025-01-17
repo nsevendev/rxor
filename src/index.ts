@@ -13,6 +13,7 @@ export { useRea } from './ReaHook';
 export { useReaCompute } from './ReaHook';
 export { getService } from './ReaHook';
 export { useRxCompute } from './ReaHook';
+export { useRxFetch } from './ReaHook';
 export { useRxStore } from './ReaHook';
 
 // Export types
