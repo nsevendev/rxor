@@ -1,9 +1,9 @@
-import { rea } from "./Rea";
+import { reaxar } from "./Rea";
 import { rxStore } from "./RxStore";
 export class ReaXor {
     constructor(initialValue) {
         this.initialValue = initialValue;
-        this.store = rea(initialValue);
+        this.store = reaxar(initialValue);
     }
     static create(initialValue, keyStore) {
         const instance = new ReaXor(initialValue);
