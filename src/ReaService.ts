@@ -10,3 +10,4 @@ export abstract class ReaService<T> {
         this.rxService.addService<T>(key, this);
     }
 }
+

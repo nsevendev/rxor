@@ -1,4 +1,4 @@
-import {ReaXor} from "./ReaXor";
+import { ReaXor } from "./ReaXor";
 
 export type StoreMap = Record<string, ReaXor<any>>;
 

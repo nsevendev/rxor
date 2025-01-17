@@ -1,14 +1,14 @@
-import { rea } from "./Rea";
-import { ReaXarType } from "./type";
-import {rxStore} from "./RxStore";
+import { reaxar } from "./Rea";
+import { rxStore } from "./RxStore";
+import { ReaXar } from "./ReaXar";
 
 export class ReaXor<T> {
-  private readonly store: ReaXarType<T>;
+  private readonly store: ReaXar<T>;
   private readonly initialValue: T;
 
   private constructor(initialValue: T) {
     this.initialValue = initialValue;
-    this.store = rea<T>(initialValue);
+    this.store = reaxar<T>(initialValue);
   }
   
   static create<T>(initialValue: T, keyStore: string): ReaXor<T> {
@@ -17,7 +17,7 @@ export class ReaXor<T> {
     return instance;
   }
 
-  get reaxar(): ReaXarType<T> {
+  get reaxar(): ReaXar<T> {
     return this.store;
   }
 
