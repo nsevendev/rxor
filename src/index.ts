@@ -1,10 +1,5 @@
 // Export all core functionality
-export { ReaXar } from './ReaXar';
 export { ReaXor } from './ReaXor';
-export { RxStore } from './RxStore';
-export { rxStore } from './RxStore';
-export { rxService } from './RxService'
-export { RxService } from './RxService'
 export { ReaService } from "./ReaService";
 export { rea } from './Rea';
 
