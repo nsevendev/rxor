@@ -42,20 +42,22 @@ jobs:
       - name: Check branch
         id: branch-check
         run: |
-          BRANCH=${{ github.ref_name }}
-          if [ "$BRANCH" = "main" ]; then
-            echo "npm_tag=latest" >> $GITHUB_ENV
-            echo "on_main=true" >> $GITHUB_ENV
-          elif [[ "$BRANCH" == release-* ]]; then
-            echo "Is a release branch"
-            echo "npm_tag=\"$BRANCH\"" >> $GITHUB_ENV
-            echo "on_main=false" >> $GITHUB_ENV
+          echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
+          if [ "${{ env.BRANCH }}" = "main" ]; then
+            echo "On a main branch"
+            echo "NPM_TAG=latest" >> $GITHUB_ENV
+            echo "ON_MAIN=true" >> $GITHUB_ENV
+          elif [[ "${{ env.BRANCH }}" == release-* ]]; then
+            echo "On a release branch"
+            echo "NPM_TAG=\"${{ env.BRANCH }}\"" >> $GITHUB_ENV
+            echo "ON_MAIN=false" >> $GITHUB_ENV
           else
             echo "Skipping: unsupported branch."
             exit 0
           fi
-            echo "Branch variable: $BRANCH"
-            echo "Branch: $BRANCH, NPM Tag: ${{ env.npm_tag }}"
+            echo "BRANCH in env: ${{ env.BRANCH }}"
+            echo "NPM_TAG in env: ${{ env.NPM_TAG }}"
+            echo "ON_MAIN in env: ${{ env.ON_MAIN }}"
 
       # Identifier type of bump
       - name: Determine bump type
@@ -69,48 +71,46 @@ jobs:
             BUMP_TYPE="patch"
           fi
           echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_ENV
-          echo "Bump type determined: $BUMP_TYPE"
+          echo "BUMP_TYPE in env: ${{ env.BUMP_TYPE }}"
 
       # Incremente version
       - name: Bump version
         run: |
-          echo "Using bump type: $BUMP_TYPE"
-          npm version $BUMP_TYPE --no-git-tag-version
+          echo "Using bump type: ${{ env.BUMP_TYPE }}"
+          npm version ${{ env.BUMP_TYPE }} --no-git-tag-version
           VERSION=$(node -p "require('./package.json').version")
-          echo "version=$VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "New version: $VERSION"
-          echo "env version : ${{ env.version }}"
+          echo "VERSION in env : ${{ env.VERSION }}"
 
       # Commit new version
       - name: Commit new version
         run: |
-          VERSION=$(node -p "require('./package.json').version")
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add package.json package-lock.json
-          git commit -m "chore(release): bump version to $VERSION"
+          git commit -m "chore(release): bump version to ${{ env.VERSION }}"
+          echo "Committing new version: ${{ env.VERSION }}"
 
       # Commit dist in branch
       - name: Commit new dist
         run: |
-          VERSION=$(node -p "require('./package.json').version")
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add dist/
-          git commit --allow-empty -m "chore(release): build dist $VERSION"
+          git commit --allow-empty -m "chore(release): build dist ${{ env.VERSION }}"
+          echo "Committing new dist with version: ${{ env.VERSION }}"
 
       # Ajout d’un tag Git basé sur la version
       - name: Tag version
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          git tag ${{ env.version }}
-          echo "Tagging version: $VERSION"
-          echo "env version : ${{ env.version }}"
+          git tag ${{ env.VERSION }}
+          echo "Tagging version: ${{ env.VERSION }}"
 
       # Push commit in branch
       - name: Push changes
         run: |
-          echo "Pushing changes and tag: $VERSION"
+          echo "Pushing changes and tag: ${{ env.VERSION }}"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ env.version }} 
 
