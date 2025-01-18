@@ -48,14 +48,13 @@ jobs:
             echo "on_main=true" >> $GITHUB_ENV
           elif [[ "$BRANCH" == release-* ]]; then
             echo "Is a release branch"
-            echo "npm_tag=$BRANCH" >> $GITHUB_ENV
+            echo "npm_tag=\"$BRANCH\"" >> $GITHUB_ENV
             echo "on_main=false" >> $GITHUB_ENV
           else
             echo "Skipping: unsupported branch."
             exit 0
           fi
-            echo "Branch: $BRANCH"
-            echo "Npm Tag: $BRANCH"
+            echo "Branch variable: $BRANCH"
             echo "Branch: $BRANCH, NPM Tag: ${{ env.npm_tag }}"
 
       # Identifier type of bump
@@ -105,13 +104,15 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
           git tag ${{ env.version }}
+          echo "Tagging version: $VERSION"
+          echo "env version : ${{ env.version }}"
 
       # Push commit in branch
       - name: Push changes
         run: |
-          echo "Pushing changes and tag: $VERSION env version : ${{ env.version }}"
+          echo "Pushing changes and tag: $VERSION"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $VERSION
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ env.version }} 
 
       # Config auth npm in .npmrc
       - name: Configure npm authentication
