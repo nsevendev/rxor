@@ -3,7 +3,7 @@
 - Rxor is a lightweight and versatile library for managing reactive states with React.  
   This documentation provides a complete guide to understanding and using rxor
 
-- Rxor uses `rxjs` as a subpackage, and needs `React 18.0.0` minimum and `Typescript 5.0.0` minimum to work.
+- Rxor uses `rxjs` as a subpackage, and needs `React lastest` minimum and `Typescript 5.0.0` minimum to work.
 
 _Installing `rxjs` in your project is **optional**.  
 The `ReaXar` Class provides a pipe function that allows you to provide a series of `rxjs` `operators`,  
