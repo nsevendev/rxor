@@ -131,7 +131,7 @@ jobs:
           echo "========== Finish Verifying =========="
           echo "Pushing changes and tag: ${{ env.VERSION }}"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ env.version }} 
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ env.VERSION }} 
 
       # Config auth npm in .npmrc
       - name: Configure npm authentication
@@ -141,4 +141,6 @@ jobs:
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --loglevel verbose
+        run: |
+          echo "Publishing package with npm tag: ${{ env.NPM_TAG }}" 
+          npm publish --tag ${{ env.NPM_TAG }} --access public --loglevel verbose
