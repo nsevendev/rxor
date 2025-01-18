@@ -46,7 +46,7 @@ jobs:
           if [ "$BRANCH" = "main" ]; then
             echo "npm_tag=latest" >> $GITHUB_ENV
             echo "on_main=true" >> $GITHUB_ENV
-          elif [[ "$BRANCH" == "release-*" ]]; then
+          elif [[ "$BRANCH" == release-* ]]; then
             NPM_TAG=$BRANCH
             echo "npm_tag=$NPM_TAG" >> $GITHUB_ENV
             echo "on_main=false" >> $GITHUB_ENV
