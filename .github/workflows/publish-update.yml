@@ -42,7 +42,7 @@ jobs:
       - name: Check branch
         id: branch-check
         run: |
-          echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "BRANCH=\"${{ github.ref_name }}\"" >> $GITHUB_ENV
           if [ "${{ env.BRANCH }}" = "main" ]; then
             echo "On a main branch"
             echo "NPM_TAG=latest" >> $GITHUB_ENV
