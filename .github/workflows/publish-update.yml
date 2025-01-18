@@ -57,7 +57,7 @@ jobs:
           fi
             echo "BRANCH=\"$BRANCH\"" >> $GITHUB_ENV
             echo "BRANCH in local: $BRANCH"
- 
+
       # Identifier type of bump
       - name: Determine bump type
         id: determine-bump
@@ -144,3 +144,12 @@ jobs:
         run: |
           echo "Publishing package with npm tag: ${{ env.NPM_TAG }}" 
           npm publish --tag ${{ env.NPM_TAG }} --access public --loglevel verbose
+
+      # Associer le dist-tag à la version publiée
+      - name: Update npm dist-tag
+        if: env.NPM_TAG != 'latest'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "Associating npm dist-tag: ${{ env.NPM_TAG }} -> ${{ env.VERSION }}"
+          npm dist-tag add rxor@${{ env.VERSION }} ${{ env.NPM_TAG }}
