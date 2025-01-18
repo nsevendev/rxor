@@ -57,7 +57,7 @@ jobs:
           fi
             echo "BRANCH=\"$BRANCH\"" >> $GITHUB_ENV
             echo "BRANCH in local: $BRANCH"
-
+ 
       # Identifier type of bump
       - name: Determine bump type
         id: determine-bump
