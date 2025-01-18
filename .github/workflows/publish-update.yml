@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - re7
+      - release-*
   pull_request:
     types:
       - closed
@@ -42,20 +42,31 @@ jobs:
       - name: Check branch
         id: branch-check
         run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "on_main=true" >> $GITHUB_ENV
-          elif [ "${{ github.ref_name }}" = "re7" ]; then
-            echo "on_recette=true" >> $GITHUB_ENV
+          BRANCH="${{ github.ref_name }}"
+          if [ "$BRANCH" = "main" ]; then
+            echo "On a main branch"
+            echo "NPM_TAG=latest" >> $GITHUB_ENV
+            echo "ON_MAIN=true" >> $GITHUB_ENV
+          elif [[ "$BRANCH" == release-* ]]; then
+            echo "On a release branch"
+            echo "NPM_TAG=\"$BRANCH\"" >> $GITHUB_ENV
+            echo "ON_MAIN=false" >> $GITHUB_ENV
           else
-            echo "on_main=false" >> $GITHUB_ENV
-            echo "on_recette=false" >> $GITHUB_ENV
+            echo "Skipping: unsupported branch."
+            exit 0
           fi
+            echo "BRANCH=\"$BRANCH\"" >> $GITHUB_ENV
+            echo "BRANCH in local: $BRANCH"
 
       # Identifier type of bump
       - name: Determine bump type
-        if: env.on_main == 'true'
         id: determine-bump
         run: |
+          echo "========== Verifying last job =========="
+          echo "BRANCH in env: ${{ env.BRANCH }}"
+          echo "NPM_TAG in env: ${{ env.NPM_TAG }}"
+          echo "ON_MAIN in env: ${{ env.ON_MAIN }}"
+          echo "========== Finish Verifying =========="
           BUMP_TYPE=$(echo "${{ github.event.head_commit.message }}" | grep -oE '\[bump:(patch|minor|major)\]' | sed 's/\[bump://;s/\]//')
           if [[ "$BUMP_TYPE" =~ ^(patch|minor|major)$ ]]; then
             echo "Valid bump type found:" $BUMP_TYPE
@@ -64,57 +75,72 @@ jobs:
             BUMP_TYPE="patch"
           fi
           echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_ENV
-          echo "Bump type determined: $BUMP_TYPE"
+          echo "BUMP_TYPE in local: $BUMP_TYPE"
 
       # Incremente version
       - name: Bump version
-        if: env.on_main == 'true'
         run: |
-          echo "Using bump type: $BUMP_TYPE"
-          npm version $BUMP_TYPE --no-git-tag-version
+          echo "========== Verifying last job =========="
+          echo "BUMP_TYPE in env: ${{ env.BUMP_TYPE }}"
+          echo "========== Finish Verifying =========="
+          echo "Using bump type: ${{ env.BUMP_TYPE }}"
+          npm version ${{ env.BUMP_TYPE }} --no-git-tag-version
           VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "New version: $VERSION"
+          echo "VERSION in local: $VERSION"
 
       # Commit new version
       - name: Commit new version
-        if: env.on_main == 'true'
         run: |
-          VERSION=$(node -p "require('./package.json').version")
+          echo "========== Verifying last job =========="
+          echo "VERSION in env : ${{ env.VERSION }}"
+          echo "========== Finish Verifying =========="
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add package.json package-lock.json
-          git commit -m "chore(release): bump version to $VERSION"
+          git commit -m "chore(release): bump version to ${{ env.VERSION }}"
+          echo "Committing new version: ${{ env.VERSION }}"
 
       # Commit dist in branch
       - name: Commit new dist
-        if: env.on_main == 'true' || env.on_recette == 'true'
         run: |
-          VERSION=$(node -p "require('./package.json').version")
+          echo "========== Verifying last job =========="
+          echo "VERSION in env : ${{ env.VERSION }}"
+          echo "========== Finish Verifying =========="
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add dist/
-          git commit --allow-empty -m "chore(release): build dist $VERSION"
+          git commit --allow-empty -m "chore(release): build dist ${{ env.VERSION }}"
+          echo "Committing new dist with version: ${{ env.VERSION }}"
 
-      # Push commit in branch main
-      - name: Push changes to main
-        if: env.on_main == 'true'
+      # Ajout d’un tag Git basé sur la version
+      - name: Tag version
         run: |
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          echo "========== Verifying last job =========="
+          echo "VERSION in env : ${{ env.VERSION }}"
+          echo "========== Finish Verifying =========="
+          git tag ${{ env.VERSION }}
+          echo "Tagging version: ${{ env.VERSION }}"
 
-      # Push commit in branch re7
-      - name: Push changes to re7
-        if: env.on_recette == 'true'
+      # Push commit in branch
+      - name: Push changes
         run: |
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:re7
+          echo "========== Verifying last job =========="
+          echo "VERSION in env : ${{ env.VERSION }}"
+          echo "========== Finish Verifying =========="
+          echo "Pushing changes and tag: ${{ env.VERSION }}"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ env.VERSION }} 
 
       # Config auth npm in .npmrc
       - name: Configure npm authentication
-        if: env.on_main == 'true'
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       # Publish npm
       - name: Publish to npm
-        if: env.on_main == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --loglevel verbose
+        run: |
+          echo "Publishing package with npm tag: ${{ env.NPM_TAG }}" 
+          npm publish --tag ${{ env.NPM_TAG }} --access public --loglevel verbose
