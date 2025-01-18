@@ -1,6 +1,6 @@
 {
   "name": "rxor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple state management library for React using RxJS",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
