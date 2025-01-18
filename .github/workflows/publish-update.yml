@@ -42,18 +42,22 @@ jobs:
       - name: Check branch
         id: branch-check
         run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
+          BRANCH=${{ github.ref_name }}
+          if [ "$BRANCH" = "main" ]; then
+            echo "npm_tag=latest" >> $GITHUB_ENV
             echo "on_main=true" >> $GITHUB_ENV
-          elif [ "${{ github.ref_name }}" = "re7" ]; then
-            echo "on_recette=true" >> $GITHUB_ENV
-          else
+          elif [[ "$BRANCH" = "release-*" ]]; then
+            NPM_TAG=$BRANCH
+            echo "npm_tag=$NPM_TAG" >> $GITHUB_ENV
             echo "on_main=false" >> $GITHUB_ENV
-            echo "on_recette=false" >> $GITHUB_ENV
+          else
+            echo "Skipping: unsupported branch."
+            exit 0
           fi
+            echo "Branch: $BRANCH, NPM Tag: ${{ env.npm_tag }}"
 
       # Identifier type of bump
       - name: Determine bump type
-        if: env.on_main == 'true'
         id: determine-bump
         run: |
           BUMP_TYPE=$(echo "${{ github.event.head_commit.message }}" | grep -oE '\[bump:(patch|minor|major)\]' | sed 's/\[bump://;s/\]//')
@@ -68,7 +72,6 @@ jobs:
 
       # Incremente version
       - name: Bump version
-        if: env.on_main == 'true'
         run: |
           echo "Using bump type: $BUMP_TYPE"
           npm version $BUMP_TYPE --no-git-tag-version
@@ -77,7 +80,6 @@ jobs:
 
       # Commit new version
       - name: Commit new version
-        if: env.on_main == 'true'
         run: |
           VERSION=$(node -p "require('./package.json').version")
           git config user.name "github-actions[bot]"
@@ -87,7 +89,6 @@ jobs:
 
       # Commit dist in branch
       - name: Commit new dist
-        if: env.on_main == 'true' || env.on_recette == 'true'
         run: |
           VERSION=$(node -p "require('./package.json').version")
           git config user.name "github-actions[bot]"
@@ -95,26 +96,24 @@ jobs:
           git add dist/
           git commit --allow-empty -m "chore(release): build dist $VERSION"
 
-      # Push commit in branch main
-      - name: Push changes to main
-        if: env.on_main == 'true'
+      # Ajout d’un tag Git basé sur la version
+      - name: Tag version
         run: |
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          VERSION=$(node -p "require('./package.json').version")
+          git tag $VERSION
 
-      # Push commit in branch re7
-      - name: Push changes to re7
-        if: env.on_recette == 'true'
+      # Push commit in branch
+      - name: Push changes
         run: |
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:re7
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $VERSION
 
       # Config auth npm in .npmrc
       - name: Configure npm authentication
-        if: env.on_main == 'true'
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       # Publish npm
       - name: Publish to npm
-        if: env.on_main == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --access public --loglevel verbose
