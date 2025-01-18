@@ -42,27 +42,31 @@ jobs:
       - name: Check branch
         id: branch-check
         run: |
-          echo "BRANCH=\"${{ github.ref_name }}\"" >> $GITHUB_ENV
-          if [ "${{ env.BRANCH }}" = "main" ]; then
+          BRANCH="${{ github.ref_name }}"
+          if [ "$BRANCH" = "main" ]; then
             echo "On a main branch"
             echo "NPM_TAG=latest" >> $GITHUB_ENV
             echo "ON_MAIN=true" >> $GITHUB_ENV
-          elif [[ "${{ env.BRANCH }}" == release-* ]]; then
+          elif [[ "$BRANCH" == release-* ]]; then
             echo "On a release branch"
-            echo "NPM_TAG=\"${{ env.BRANCH }}\"" >> $GITHUB_ENV
+            echo "NPM_TAG=\"$BRANCH\"" >> $GITHUB_ENV
             echo "ON_MAIN=false" >> $GITHUB_ENV
           else
             echo "Skipping: unsupported branch."
             exit 0
           fi
-            echo "BRANCH in env: ${{ env.BRANCH }}"
-            echo "NPM_TAG in env: ${{ env.NPM_TAG }}"
-            echo "ON_MAIN in env: ${{ env.ON_MAIN }}"
+            echo "BRANCH=\"$BRANCH\"" >> $GITHUB_ENV
+            echo "BRANCH in local: $BRANCH"
 
       # Identifier type of bump
       - name: Determine bump type
         id: determine-bump
         run: |
+          echo "========== Verifying last job =========="
+          echo "BRANCH in env: ${{ env.BRANCH }}"
+          echo "NPM_TAG in env: ${{ env.NPM_TAG }}"
+          echo "ON_MAIN in env: ${{ env.ON_MAIN }}"
+          echo "========== Finish Verifying =========="
           BUMP_TYPE=$(echo "${{ github.event.head_commit.message }}" | grep -oE '\[bump:(patch|minor|major)\]' | sed 's/\[bump://;s/\]//')
           if [[ "$BUMP_TYPE" =~ ^(patch|minor|major)$ ]]; then
             echo "Valid bump type found:" $BUMP_TYPE
@@ -71,21 +75,27 @@ jobs:
             BUMP_TYPE="patch"
           fi
           echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_ENV
-          echo "BUMP_TYPE in env: ${{ env.BUMP_TYPE }}"
+          echo "BUMP_TYPE in local: $BUMP_TYPE"
 
       # Incremente version
       - name: Bump version
         run: |
+          echo "========== Verifying last job =========="
+          echo "BUMP_TYPE in env: ${{ env.BUMP_TYPE }}"
+          echo "========== Finish Verifying =========="
           echo "Using bump type: ${{ env.BUMP_TYPE }}"
           npm version ${{ env.BUMP_TYPE }} --no-git-tag-version
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "New version: $VERSION"
-          echo "VERSION in env : ${{ env.VERSION }}"
+          echo "VERSION in local: $VERSION"
 
       # Commit new version
       - name: Commit new version
         run: |
+          echo "========== Verifying last job =========="
+          echo "VERSION in env : ${{ env.VERSION }}"
+          echo "========== Finish Verifying =========="
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add package.json package-lock.json
@@ -95,6 +105,9 @@ jobs:
       # Commit dist in branch
       - name: Commit new dist
         run: |
+          echo "========== Verifying last job =========="
+          echo "VERSION in env : ${{ env.VERSION }}"
+          echo "========== Finish Verifying =========="
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add dist/
@@ -104,12 +117,18 @@ jobs:
       # Ajout d’un tag Git basé sur la version
       - name: Tag version
         run: |
+          echo "========== Verifying last job =========="
+          echo "VERSION in env : ${{ env.VERSION }}"
+          echo "========== Finish Verifying =========="
           git tag ${{ env.VERSION }}
           echo "Tagging version: ${{ env.VERSION }}"
 
       # Push commit in branch
       - name: Push changes
         run: |
+          echo "========== Verifying last job =========="
+          echo "VERSION in env : ${{ env.VERSION }}"
+          echo "========== Finish Verifying =========="
           echo "Pushing changes and tag: ${{ env.VERSION }}"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ env.version }} 
