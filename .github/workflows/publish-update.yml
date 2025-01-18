@@ -47,6 +47,7 @@ jobs:
             echo "npm_tag=latest" >> $GITHUB_ENV
             echo "on_main=true" >> $GITHUB_ENV
           elif [[ "$BRANCH" == release-* ]]; then
+            echo "Is a release branch"
             echo "npm_tag=$BRANCH" >> $GITHUB_ENV
             echo "on_main=false" >> $GITHUB_ENV
           else
