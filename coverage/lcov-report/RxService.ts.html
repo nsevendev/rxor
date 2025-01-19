@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for RxStore.ts</title>
+    <title>Code coverage report for RxService.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="prettify.css" />
     <link rel="stylesheet" href="base.css" />
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="index.html">All files</a> RxStore.ts</h1>
+        <h1><a href="index.html">All files</a> RxService.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/18</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/18</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -96,81 +96,72 @@
 <a name='L31'></a><a href='#L31'>31</a>
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { ReaXor } from "./ReaXor";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { ReaService } from "./ReaService";
 &nbsp;
-export type StoreMap = Record&lt;string, ReaXor&lt;any&gt;&gt;;
+export type ServiceMap = Record&lt;string, ReaService&lt;any&gt;&gt;
 &nbsp;
-export class RxStore {
-    private stores: StoreMap = {};
+export class RxService {
+    private services: ServiceMap = {} as ServiceMap;
     
-    addStore = &lt;T&gt;(key: string, store: ReaXor&lt;T&gt;): void =&gt; {
-        if (this.stores[key]) {
-            console.warn(`Store with key "${key}" already exists. Overwriting.`);
+    addService = &lt;T&gt;(key: string, service: ReaService&lt;T&gt;): void =&gt; {
+        if (this.services[key]) {
+            console.warn(`Service with key "${key}" already exists. Overwriting.`);
         }
-        this.stores[key] = store;
+        this.services[key] = service;
     }
     
-    getStores = (): StoreMap =&gt; {
-        return this.stores;
+    getServices = (): ServiceMap =&gt; {
+        return this.services;
     }
     
-    getStore = &lt;T&gt;(key: string): ReaXor&lt;T&gt; | undefined =&gt; {
-        const store = this.stores[key];
-        if (!store) {
-            return undefined
-        }
-        return store as ReaXor&lt;T&gt;;
+    getService = &lt;T&gt;(key: string): T =&gt; {
+        const service = this.services[key];
+        return service as T;
     }
     
-    hasStore = (key: string): boolean =&gt; {
-        return !!this.stores[key];
+    hasService = (key: string): boolean =&gt; {
+        return !!this.services[key];
     }
     
     reset = (): void =&gt; {
-        this.stores = {};
+        this.services = {} as ServiceMap;
     }
 }
 &nbsp;
-export const rxStore = new RxStore();
+export const rxService = new RxService();
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
