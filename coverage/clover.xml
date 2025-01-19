@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1737315682202" clover="3.2.0">
-  <project timestamp="1737315682202" name="All files">
-    <metrics statements="69" coveredstatements="65" conditionals="4" coveredconditionals="4" methods="28" coveredmethods="24" elements="101" coveredelements="93" complexity="0" loc="69" ncloc="69" packages="1" files="6" classes="6"/>
+<coverage generated="1737316719588" clover="3.2.0">
+  <project timestamp="1737316719589" name="All files">
+    <metrics statements="69" coveredstatements="68" conditionals="4" coveredconditionals="4" methods="28" coveredmethods="27" elements="101" coveredelements="99" complexity="0" loc="69" ncloc="69" packages="1" files="6" classes="6"/>
     <file name="Rea.ts" path="/home/mathis/projets/rxor/src/Rea.ts">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
       <line num="1" count="2" type="stmt"/>
@@ -18,20 +18,20 @@
       <line num="10" count="6" type="stmt"/>
     </file>
     <file name="ReaXar.ts" path="/home/mathis/projets/rxor/src/ReaXar.ts">
-      <metrics statements="13" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="4"/>
-      <line num="1" count="2" type="stmt"/>
-      <line num="9" count="2" type="stmt"/>
-      <line num="13" count="36" type="stmt"/>
-      <line num="18" count="25" type="stmt"/>
-      <line num="23" count="31" type="stmt"/>
-      <line num="27" count="36" type="stmt"/>
-      <line num="28" count="3" type="stmt"/>
-      <line num="32" count="36" type="stmt"/>
-      <line num="33" count="0" type="stmt"/>
-      <line num="37" count="36" type="stmt"/>
-      <line num="40" count="0" type="stmt"/>
-      <line num="43" count="36" type="stmt"/>
-      <line num="44" count="0" type="stmt"/>
+      <metrics statements="13" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="7"/>
+      <line num="1" count="3" type="stmt"/>
+      <line num="9" count="3" type="stmt"/>
+      <line num="13" count="66" type="stmt"/>
+      <line num="18" count="41" type="stmt"/>
+      <line num="23" count="45" type="stmt"/>
+      <line num="27" count="66" type="stmt"/>
+      <line num="28" count="7" type="stmt"/>
+      <line num="32" count="66" type="stmt"/>
+      <line num="33" count="1" type="stmt"/>
+      <line num="37" count="66" type="stmt"/>
+      <line num="40" count="1" type="stmt"/>
+      <line num="43" count="66" type="stmt"/>
+      <line num="44" count="1" type="stmt"/>
     </file>
     <file name="ReaXor.ts" path="/home/mathis/projets/rxor/src/ReaXor.ts">
       <metrics statements="13" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="6"/>
