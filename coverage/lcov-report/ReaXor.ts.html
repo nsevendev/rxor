@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.53% </span>
+                <span class="strong">92.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/13</span>
+                <span class='fraction'>12/13</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.57% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/7</span>
+                <span class='fraction'>6/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.53% </span>
+                <span class="strong">92.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/13</span>
+                <span class='fraction'>12/13</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -106,28 +106,23 @@
 <a name='L41'></a><a href='#L41'>41</a>
 <a name='L42'></a><a href='#L42'>42</a>
 <a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L44'></a><a href='#L44'>44</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -136,17 +131,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { reaxar } from "./Rea";
@@ -173,23 +173,23 @@ export class ReaXor&lt;T&gt; {
   }
 &nbsp;
   // Getter to access the current value
-<span class="fstat-no" title="function not covered" >  get v</span>alue(): T {
-<span class="cstat-no" title="statement not covered" >    return this.store.value;</span>
+  get value(): T {
+    return this.store.value;
   }
 &nbsp;
   // Setter to change the value
-<span class="fstat-no" title="function not covered" >  set v</span>alue(newValue: T) {
-<span class="cstat-no" title="statement not covered" >    this.store.value = newValue;</span>
+  set value(newValue: T) {
+    this.store.value = newValue;
   }
 &nbsp;
   // Method to reset the blind to its initial value
-<span class="fstat-no" title="function not covered" >  reset(</span>): void {
-<span class="cstat-no" title="statement not covered" >    this.store.value = this.initialValue;</span>
+  reset(): void {
+    this.store.value = this.initialValue;
   }
 &nbsp;
   // Method to subscribe to changes
-<span class="fstat-no" title="function not covered" >  subscribe(</span>callback: (value: T) =&gt; void): void {
-<span class="cstat-no" title="statement not covered" >    this.store.subscribe(callback);</span>
+  subscribe(callback: (value: T) =&gt; void): void {
+    this.store.subscribe(callback);
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -199,7 +199,7 @@ export class ReaXor&lt;T&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-01-19T18:59:52.756Z
+                at 2025-01-19T19:41:22.196Z
             </div>
         <script src="prettify.js"></script>
         <script>
