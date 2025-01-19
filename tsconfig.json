@@ -10,6 +10,6 @@
     "skipLibCheck": true,
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "test/RxStore.test.ts"],
   "exclude": ["node_modules", "dist"]
 }
