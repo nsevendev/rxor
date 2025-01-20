@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1737390242831" clover="3.2.0">
-  <project timestamp="1737390242831" name="All files">
+<coverage generated="1737390870208" clover="3.2.0">
+  <project timestamp="1737390870208" name="All files">
     <metrics statements="120" coveredstatements="108" conditionals="13" coveredconditionals="8" methods="41" coveredmethods="40" elements="174" coveredelements="156" complexity="0" loc="120" ncloc="120" packages="1" files="7" classes="7"/>
     <file name="Rea.ts" path="/home/mathis/projets/rxor/src/Rea.ts">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
