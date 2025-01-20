@@ -52,6 +52,7 @@ describe("ReaHook Tests", () => {
     beforeEach(() => {
       rxStore.reset();
     });
+
     // Test to check if useRxStore returns the value of an existing ReaXor in the store
     it("should return the value of an existing ReaXor in the store", () => {
       const reaxor = ReaXor.create(100, "testStore");
@@ -73,6 +74,8 @@ describe("ReaHook Tests", () => {
 
     // Test to ensure that useRxStore returns undefined if the store key does not exist
     it("should return undefined if the store key does not exist", () => {
+      const spyWarn = jest.spyOn(console, "warn").mockImplementation(() => {});
+
       const TestComponent: React.FC = () => {
         const value = useRxStore<number>("invalidKey");
         return <div data-testid="value">{value ?? "undefined"}</div>;
@@ -80,6 +83,10 @@ describe("ReaHook Tests", () => {
 
       const { getByTestId } = render(<TestComponent />);
       expect(getByTestId("value").textContent).toBe("undefined");
+
+      expect(spyWarn).toHaveBeenCalled();
+
+      spyWarn.mockRestore();
     });
   });
 
