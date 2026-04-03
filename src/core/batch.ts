@@ -1,3 +1,10 @@
-export function batch(_fn: () => void): void {
-  throw new Error("Not implemented yet");
+import { endBatch, startBatch } from "./graph";
+
+export function batch(fn: () => void): void {
+  startBatch();
+  try {
+    fn();
+  } finally {
+    endBatch();
+  }
 }
