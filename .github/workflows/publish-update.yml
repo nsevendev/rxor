@@ -1,20 +1,19 @@
 name: Publish to npm
 
 on:
-  push:
-    branches:
-      - main
-      - release-*
   pull_request:
     types:
       - closed
+    branches:
+      - main
+      - release-*
 
 permissions:
   contents: write
 
 jobs:
   publish:
-    if: github.event.pull_request.merged == true && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'release-')) || github.event_name == 'push'
+    if: github.event.pull_request.merged == true
     name: Lint, Test, Build & Publish
     runs-on: ubuntu-latest
 
@@ -45,45 +44,31 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Check branch
-        id: branch-check
-        run: |
-          BRANCH="${{ github.ref_name }}"
-          if [ "$BRANCH" = "main" ]; then
-            echo "NPM_TAG=latest" >> $GITHUB_ENV
-          elif [[ "$BRANCH" == release-* ]]; then
-            echo "NPM_TAG=$BRANCH" >> $GITHUB_ENV
-          else
-            echo "Skipping: unsupported branch."
-            exit 0
-          fi
-
       - name: Determine bump type
         run: |
-          BUMP_TYPE=$(echo "${{ github.event.head_commit.message }}" | grep -oE '\[bump:(patch|minor|major)\]' | sed 's/\[bump://;s/\]//')
+          COMMIT_MSG="${{ github.event.pull_request.title }}"
+          BUMP_TYPE=$(echo "$COMMIT_MSG" | grep -oE '\[bump:(patch|minor|major)\]' | sed 's/\[bump://;s/\]//')
           if [[ ! "$BUMP_TYPE" =~ ^(patch|minor|major)$ ]]; then
             BUMP_TYPE="patch"
           fi
           echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_ENV
+          echo "Bump type: $BUMP_TYPE (from PR title)"
 
       - name: Bump version
         run: |
           npm version ${{ env.BUMP_TYPE }} --no-git-tag-version
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "New version: $VERSION"
 
-      - name: Commit and tag
+      - name: Determine npm tag
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json pnpm-lock.yaml
-          git commit -m "chore(release): bump version to ${{ env.VERSION }}"
-          git tag "v${{ env.VERSION }}"
-
-      - name: Push changes
-        run: |
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} "v${{ env.VERSION }}"
+          BRANCH="${{ github.event.pull_request.base.ref }}"
+          if [ "$BRANCH" = "main" ]; then
+            echo "NPM_TAG=latest" >> $GITHUB_ENV
+          else
+            echo "NPM_TAG=$BRANCH" >> $GITHUB_ENV
+          fi
 
       - name: Configure npm authentication
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
@@ -91,4 +76,6 @@ jobs:
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --tag ${{ env.NPM_TAG }} --access public
+        run: |
+          echo "Publishing rxor@${{ env.VERSION }} with tag ${{ env.NPM_TAG }}"
+          npm publish --tag ${{ env.NPM_TAG }} --access public
