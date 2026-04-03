@@ -32,7 +32,8 @@ export function effect(fn: EffectFn): CleanupFn {
     // Track new dependencies
     startTracking(subscriber);
     try {
-      cleanup = fn() ?? undefined;
+      const result = fn();
+      cleanup = typeof result === "function" ? result : undefined;
     } finally {
       endTracking(subscriber);
     }
