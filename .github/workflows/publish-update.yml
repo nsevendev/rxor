@@ -14,133 +14,81 @@ permissions:
 
 jobs:
   publish:
-    if: github.event.pull_request.merged == true && (github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 're7') || github.event_name == 'push'
-    name: Publish to npm
+    if: github.event.pull_request.merged == true && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'release-')) || github.event_name == 'push'
+    name: Lint, Test, Build & Publish
     runs-on: ubuntu-latest
 
     steps:
-      # checked code source
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Config Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: '22.13.0'
-          cache: 'npm'
+          version: 10
 
-      # Install dependancies
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
-      # Build project
-      - name: Build project
-        run: npm run prepare
+      - name: Lint
+        run: pnpm lint
 
-      # checked if we on branch "main" or "re7
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
       - name: Check branch
         id: branch-check
         run: |
           BRANCH="${{ github.ref_name }}"
           if [ "$BRANCH" = "main" ]; then
-            echo "On a main branch"
             echo "NPM_TAG=latest" >> $GITHUB_ENV
-            echo "ON_MAIN=true" >> $GITHUB_ENV
           elif [[ "$BRANCH" == release-* ]]; then
-            echo "On a release branch"
-            echo "NPM_TAG=\"$BRANCH\"" >> $GITHUB_ENV
-            echo "ON_MAIN=false" >> $GITHUB_ENV
+            echo "NPM_TAG=$BRANCH" >> $GITHUB_ENV
           else
             echo "Skipping: unsupported branch."
             exit 0
           fi
-            echo "BRANCH=\"$BRANCH\"" >> $GITHUB_ENV
-            echo "BRANCH in local: $BRANCH"
- 
-      # Identifier type of bump
+
       - name: Determine bump type
-        id: determine-bump
         run: |
-          echo "========== Verifying last job =========="
-          echo "BRANCH in env: ${{ env.BRANCH }}"
-          echo "NPM_TAG in env: ${{ env.NPM_TAG }}"
-          echo "ON_MAIN in env: ${{ env.ON_MAIN }}"
-          echo "========== Finish Verifying =========="
           BUMP_TYPE=$(echo "${{ github.event.head_commit.message }}" | grep -oE '\[bump:(patch|minor|major)\]' | sed 's/\[bump://;s/\]//')
-          if [[ "$BUMP_TYPE" =~ ^(patch|minor|major)$ ]]; then
-            echo "Valid bump type found:" $BUMP_TYPE
-          else
-            echo "No valid bump type found in commit message. Defaulting to 'patch'."
+          if [[ ! "$BUMP_TYPE" =~ ^(patch|minor|major)$ ]]; then
             BUMP_TYPE="patch"
           fi
           echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_ENV
-          echo "BUMP_TYPE in local: $BUMP_TYPE"
 
-      # Incremente version
       - name: Bump version
         run: |
-          echo "========== Verifying last job =========="
-          echo "BUMP_TYPE in env: ${{ env.BUMP_TYPE }}"
-          echo "========== Finish Verifying =========="
-          echo "Using bump type: ${{ env.BUMP_TYPE }}"
           npm version ${{ env.BUMP_TYPE }} --no-git-tag-version
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "New version: $VERSION"
-          echo "VERSION in local: $VERSION"
 
-      # Commit new version
-      - name: Commit new version
+      - name: Commit and tag
         run: |
-          echo "========== Verifying last job =========="
-          echo "VERSION in env : ${{ env.VERSION }}"
-          echo "========== Finish Verifying =========="
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json package-lock.json
+          git add package.json pnpm-lock.yaml
           git commit -m "chore(release): bump version to ${{ env.VERSION }}"
-          echo "Committing new version: ${{ env.VERSION }}"
+          git tag "v${{ env.VERSION }}"
 
-      # Commit dist in branch
-      - name: Commit new dist
-        run: |
-          echo "========== Verifying last job =========="
-          echo "VERSION in env : ${{ env.VERSION }}"
-          echo "========== Finish Verifying =========="
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add dist/
-          git commit --allow-empty -m "chore(release): build dist ${{ env.VERSION }}"
-          echo "Committing new dist with version: ${{ env.VERSION }}"
-
-      # Ajout d’un tag Git basé sur la version
-      - name: Tag version
-        run: |
-          echo "========== Verifying last job =========="
-          echo "VERSION in env : ${{ env.VERSION }}"
-          echo "========== Finish Verifying =========="
-          git tag ${{ env.VERSION }}
-          echo "Tagging version: ${{ env.VERSION }}"
-
-      # Push commit in branch
       - name: Push changes
         run: |
-          echo "========== Verifying last job =========="
-          echo "VERSION in env : ${{ env.VERSION }}"
-          echo "========== Finish Verifying =========="
-          echo "Pushing changes and tag: ${{ env.VERSION }}"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ env.VERSION }} 
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} "v${{ env.VERSION }}"
 
-      # Config auth npm in .npmrc
       - name: Configure npm authentication
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
-      # Publish npm
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          echo "Publishing package with npm tag: ${{ env.NPM_TAG }}" 
-          npm publish --tag ${{ env.NPM_TAG }} --access public --loglevel verbose
+        run: npm publish --tag ${{ env.NPM_TAG }} --access public
