@@ -3,4 +3,4 @@ export type { Signal, ReadonlySignal, Computed } from "./core";
 
 export { useSignal, useComputed } from "./react";
 
-export { createStore } from "./store";
+export { createStore, useStore } from "./store";
