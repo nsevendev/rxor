@@ -1,12 +1,6 @@
-// Export all core functionality
-export { ReaXor } from './ReaXor';
-export { ReaService } from "./ReaService";
-export { reaxar } from './Rea';
-export { rxservice } from './GetService';
+export { signal, computed, effect, batch } from "./core";
+export type { Signal, ReadonlySignal, Computed } from "./core";
 
-// Export React hooks
-export { useRea } from './ReaHook';
-export { useReaCompute } from './ReaHook';
-export { useRxCompute } from './ReaHook';
-export { useRxFetch } from './ReaHook';
-export { useRxStore } from './ReaHook';
+export { useSignal, useComputed } from "./react";
+
+export { createStore } from "./store";
