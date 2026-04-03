@@ -1,4 +1,4 @@
-export { signal, computed, effect, batch } from "./core";
+export { signal, computed, effect, batch, untracked } from "./core";
 export type { Signal, ReadonlySignal, Computed } from "./core";
 
 export { useSignal, useComputed } from "./react";
